@@ -1,0 +1,732 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASPAM ExamHub Pro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#080d1b;
+  --panel:#111a2d;
+  --panel2:#17233a;
+  --border:#26344e;
+  --text:#edf4ff;
+  --muted:#91a2bd;
+  --cyan:#36d9e8;
+  --purple:#9b80ff;
+  --green:#42d69b;
+  --red:#ff7185;
+  --yellow:#ffca72;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 80% 0%,#172b49 0,transparent 30%),
+    radial-gradient(circle at 0% 90%,#17203c 0,transparent 30%),var(--bg);
+  color:var(--text);min-height:100vh
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:255px;background:#0c1425;border-right:1px solid var(--border);
+  padding:25px 17px;position:fixed;inset:0 auto 0 0;z-index:5;
+  display:flex;flex-direction:column
+}
+.brand{display:flex;align-items:center;gap:12px;padding:5px 8px 30px}
+.logo{
+  width:43px;height:43px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:#07101e;font-size:21px;font-weight:900
+}
+.brand h2{font-size:17px;letter-spacing:-.5px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.nav-label{font-size:10px;color:#70819d;font-weight:800;letter-spacing:1.5px;padding:15px 12px 9px}
+.nav button{
+  width:100%;border:0;background:transparent;color:#a9b8ce;
+  padding:12px;border-radius:10px;text-align:left;margin:3px 0;
+  display:flex;align-items:center;gap:12px;font-size:13px;transition:.2s
+}
+.nav button:hover,.nav button.active{background:#1a2b43;color:var(--cyan)}
+.nav button.active{box-shadow:inset 3px 0 var(--cyan)}
+.nav .ico{width:20px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto;padding:15px 8px;color:var(--muted);font-size:11px;line-height:1.8}
+.sidebar-bottom strong{color:var(--cyan)}
+.main{margin-left:255px;width:calc(100% - 255px);padding:28px 34px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;gap:15px}
+.eyebrow{color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:27px;letter-spacing:-1px;margin-top:7px}
+.subtitle{color:var(--muted);font-size:12px;margin-top:7px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.profile{
+  border:1px solid var(--border);background:var(--panel);padding:9px 13px;
+  border-radius:12px;font-size:12px;color:var(--text)
+}
+.avatar{display:inline-grid;place-items:center;width:28px;height:28px;
+  border-radius:9px;background:#243b5b;color:var(--cyan);margin-right:7px;font-weight:800}
+.btn{
+  border:1px solid var(--border);background:var(--panel2);color:var(--text);
+  padding:10px 15px;border-radius:10px;font-size:12px;font-weight:700;transition:.2s
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--cyan)}
+.btn.primary{background:linear-gradient(110deg,#27c7d9,#8b78ff);color:#07111e;border:0}
+.btn.danger{color:var(--red);border-color:#633342}
+.btn.small{padding:7px 10px;font-size:11px}
+.grid{display:grid;gap:17px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:20px}
+.card{
+  background:linear-gradient(145deg,rgba(22,34,56,.97),rgba(14,24,42,.97));
+  border:1px solid var(--border);border-radius:17px;padding:20px;
+  box-shadow:0 12px 35px #0002
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#20354d;font-size:18px}
+.stat-value{font-size:29px;font-weight:800;margin-top:16px;letter-spacing:-1px}
+.stat-name{font-size:11px;color:var(--muted);margin-top:5px}
+.stat-foot{font-size:10px;color:var(--green);margin-top:12px}
+.content-grid{grid-template-columns:1.5fr 1fr}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.section-head h2{font-size:16px}
+.section-head p{font-size:11px;color:var(--muted);margin-top:5px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th{text-align:left;font-size:10px;color:#8295b1;padding:12px 10px;border-bottom:1px solid var(--border);letter-spacing:.6px}
+td{padding:14px 10px;border-bottom:1px solid #26344e88;font-size:11px;color:#dce7f6}
+tr:last-child td{border:0}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;font-size:9px;font-weight:800;background:#20334c;color:var(--cyan)}
+.tag.green{background:#15392f;color:var(--green)}
+.tag.yellow{background:#40351e;color:var(--yellow)}
+.tag.red{background:#432532;color:var(--red)}
+.activity{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #26344e88}
+.activity:last-child{border:0}
+.activity-icon{width:34px;height:34px;border-radius:11px;background:#20354d;display:grid;place-items:center}
+.activity strong{font-size:11px}
+.activity p{font-size:10px;color:var(--muted);margin-top:5px}
+.page{display:none;animation:appear .3s ease}
+.page.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:17px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.field label{font-size:11px;color:#a9bad2;font-weight:700}
+.field input,.field select,.field textarea,.search{
+  width:100%;background:#0c1628;border:1px solid var(--border);
+  color:var(--text);padding:11px 12px;border-radius:9px;outline:none;font-size:12px
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan)}
+.field textarea{min-height:85px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.question-editor{border:1px solid var(--border);background:#0e192b;padding:16px;border-radius:13px;margin:12px 0}
+.question-editor h3{font-size:12px;margin-bottom:12px}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.option-grid input{width:100%;background:#101d31;border:1px solid var(--border);padding:9px;border-radius:8px;color:white;font-size:11px}
+.inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:11px;line-height:1.7}
+.empty{text-align:center;padding:40px 15px;color:var(--muted);font-size:12px}
+.exam-card{border:1px solid var(--border);background:linear-gradient(145deg,#172640,#101b2e);border-radius:15px;padding:18px}
+.exam-card h3{font-size:14px;margin:12px 0 7px}
+.exam-card p{font-size:11px;color:var(--muted);line-height:1.7}
+.exam-meta{display:flex;gap:13px;flex-wrap:wrap;font-size:10px;color:#a8b9d1;margin:14px 0}
+.exam-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.progress{height:7px;background:#24334b;border-radius:20px;overflow:hidden;margin:10px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:20px}
+.modal{
+  position:fixed;inset:0;background:#020612d9;z-index:20;display:none;
+  align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(8px)
+}
+.modal.show{display:flex}
+.modal-box{
+  width:min(720px,100%);max-height:90vh;overflow:auto;
+  background:#101b2e;border:1px solid #344966;border-radius:18px;padding:24px
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-head h2{font-size:17px}
+.close{background:#26364e;border:0;color:white;width:30px;height:30px;border-radius:9px}
+.exam-screen{position:fixed;inset:0;background:#080d1b;z-index:30;display:none;overflow:auto;padding:25px}
+.exam-screen.show{display:block}
+.exam-layout{max-width:1100px;margin:auto}
+.exam-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:17px;gap:15px}
+.timer{font-size:20px;font-weight:800;color:var(--cyan);background:#14263c;padding:11px 17px;border-radius:12px}
+.exam-body{display:grid;grid-template-columns:1fr 260px;gap:18px;margin-top:22px}
+.question-box{background:var(--panel);border:1px solid var(--border);padding:25px;border-radius:17px}
+.question-box h3{font-size:16px;line-height:1.7;margin:17px 0}
+.answer-option{display:flex;gap:11px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:10px;margin:9px 0;font-size:12px;cursor:pointer}
+.answer-option:hover{border-color:var(--cyan);background:#172b42}
+.answer-option input{accent-color:var(--cyan)}
+.question-nav{background:var(--panel);border:1px solid var(--border);padding:18px;border-radius:17px}
+.number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:15px 0}
+.number-grid button{border:1px solid var(--border);background:#17243a;color:white;border-radius:8px;padding:10px 3px;font-size:11px}
+.number-grid button.current{background:var(--cyan);color:#07111e}
+.number-grid button.answered{background:#174a3b;border-color:#27876c}
+.number-grid button.review{outline:2px solid var(--yellow)}
+.exam-controls{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.result-score{font-size:42px;font-weight:900;color:var(--cyan);margin:12px 0}
+.result-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px}
+.chart-bars{display:flex;align-items:end;gap:12px;height:170px;padding-top:20px}
+.bar-item{flex:1;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:end;gap:7px}
+.bar{background:linear-gradient(180deg,var(--cyan),var(--purple));border-radius:7px 7px 2px 2px;min-height:3px}
+.bar-item small{font-size:9px;color:var(--muted)}
+.notice{border:1px solid #35516c;background:#142a40;border-radius:12px;padding:13px;color:#b8d9eb;font-size:11px;line-height:1.7;margin:12px 0}
+.mobile-menu{display:none}
+@media(max-width:1000px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .content-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .sidebar{transform:translateX(-100%);transition:.25s}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin:0;width:100%;padding:20px 15px}
+ .mobile-menu{display:inline-block}
+ .topbar{align-items:flex-start}
+ .top-actions .profile{display:none}
+ .exam-list{grid-template-columns:1fr}
+ .exam-body{grid-template-columns:1fr}
+ .question-nav{order:-1}
+ .number-grid{grid-template-columns:repeat(8,1fr)}
+ .form-grid{grid-template-columns:1fr}
+ h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo">C</div>
+    <div><h2>CASPAM ExamHub</h2><small>EXAMINATION MANAGEMENT</small></div>
+  </div>
+  <div class="nav-label">MAIN MENU</div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard"><span class="ico">◫</span>Dashboard</button>
+    <button data-page="exams"><span class="ico">▤</span>All Examinations</button>
+    <button data-page="create"><span class="ico">✚</span>Create Examination</button>
+    <button data-page="questionbank"><span class="ico">▦</span>Question Bank</button>
+    <button data-page="student"><span class="ico">♙</span>Student Portal</button>
+    <button data-page="results"><span class="ico">▥</span>Results & Analytics</button>
+  </nav>
+  <div class="nav-label">SYSTEM</div>
+  <nav class="nav">
+    <button data-page="settings"><span class="ico">⚙</span>Settings & Backup</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <strong>CASPAM</strong><br>
+    Centre for Advanced Studies in Pure and Applied Mathematics<br><br>
+    ExamHub Pro · Prototype v2.0
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div>
+    <button class="btn mobile-menu" onclick="toggleMenu()">☰</button>
+    <div class="eyebrow">CENTRE FOR ADVANCED STUDIES</div>
+    <h1 id="pageTitle">Dashboard Overview</h1>
+    <p class="subtitle" id="pageSubtitle">Your examination control centre.</p>
+  </div>
+  <div class="top-actions">
+    <div class="profile"><span class="avatar">A</span>Administrator</div>
+    <button class="btn primary" onclick="showPage('create')">＋ New Exam</button>
+  </div>
+</header>
+
+<section class="page active" id="dashboard">
+  <div class="grid stats">
+    <div class="card"><div class="stat-top"><span class="muted">Total Examinations</span><span class="stat-icon">▤</span></div><div class="stat-value" id="statExams">0</div><div class="stat-foot">Created examinations</div></div>
+    <div class="card"><div class="stat-top"><span class="muted">Question Bank</span><span class="stat-icon">▦</span></div><div class="stat-value" id="statQuestions">0</div><div class="stat-foot">Saved questions</div></div>
+    <div class="card"><div class="stat-top"><span class="muted">Student Attempts</span><span class="stat-icon">♙</span></div><div class="stat-value" id="statAttempts">0</div><div class="stat-foot">Submitted examinations</div></div>
+    <div class="card"><div class="stat-top"><span class="muted">Average Score</span><span class="stat-icon">◈</span></div><div class="stat-value" id="statAverage">0%</div><div class="stat-foot">Across submitted attempts</div></div>
+  </div>
+  <div class="grid content-grid">
+    <div class="card">
+      <div class="section-head"><div><h2>Recent Examinations</h2><p>Latest examinations created</p></div><button class="btn small" onclick="showPage('exams')">View all →</button></div>
+      <div class="table-wrap"><table><thead><tr><th>EXAMINATION</th><th>QUESTIONS</th><th>DURATION</th><th>STATUS</th></tr></thead><tbody id="recentExams"></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="section-head"><div><h2>Recent Activity</h2><p>Latest system updates</p></div></div>
+      <div id="activityList"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="section-head"><div><h2>Performance Snapshot</h2><p>Distribution of recent student scores</p></div></div>
+    <div id="performanceChart" class="chart-bars"></div>
+  </div>
+</section>
+
+<section class="page" id="exams">
+  <div class="section-head"><div><h2>Examination Library</h2><p>Manage all department examinations</p></div><button class="btn primary" onclick="showPage('create')">＋ Create Exam</button></div>
+  <div class="toolbar"><input class="search" id="examSearch" placeholder="Search examinations..." oninput="renderExams()" style="max-width:300px"><select class="search" id="examFilter" onchange="renderExams()" style="max-width:180px"><option value="all">All examinations</option><option value="active">Active</option><option value="draft">Draft</option></select></div>
+  <div class="exam-list" id="examList"></div>
+</section>
+
+<section class="page" id="create">
+  <div class="card">
+    <div class="section-head"><div><h2>Examination Builder</h2><p>Create a new examination for your department</p></div><span class="tag">FACULTY PANEL</span></div>
+    <div class="form-grid">
+      <div class="field"><label>Examination Title</label><input id="examTitle" placeholder="e.g. Mathematics Midterm Examination"></div>
+      <div class="field"><label>Subject / Course</label><input id="examSubject" placeholder="e.g. Linear Algebra"></div>
+      <div class="field"><label>Duration (minutes)</label><input id="examDuration" type="number" min="1" value="30"></div>
+      <div class="field"><label>Total Marks</label><input id="examTotal" type="number" min="1" value="20"></div>
+      <div class="field"><label>Examination Status</label><select id="examStatus"><option value="active">Active</option><option value="draft">Draft</option></select></div>
+      <div class="field"><label>Question Order</label><select id="examRandom"><option value="no">Keep original order</option><option value="yes">Randomize questions</option></select></div>
+      <div class="field"><label>Negative Marking</label><select id="negativeMarking"><option value="0">No negative marking</option><option value="0.25">-0.25 per wrong answer</option><option value="0.5">-0.5 per wrong answer</option><option value="1">-1 per wrong answer</option></select></div>
+      <div class="field"><label>Instructions</label><input id="examInstructions" placeholder="Read all questions carefully..."></div>
+    </div>
+    <div class="notice">Add questions below. Each question can have its own marks and section. Written questions are saved for manual marking.</div>
+    <div class="section-head"><div><h2>Questions</h2><p id="questionCount">0 questions added</p></div><button class="btn primary" onclick="addQuestion()">＋ Add Question</button></div>
+    <div id="questionEditors"></div>
+    <div class="inline" style="margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="resetBuilder()">Clear Form</button>
+      <button class="btn primary" onclick="saveExam()">Save Examination</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="questionbank">
+  <div class="section-head"><div><h2>Question Bank</h2><p>Store and reuse questions in future examinations</p></div><span class="tag">REUSABLE CONTENT</span></div>
+  <div class="card">
+    <div class="toolbar"><input class="search" id="bankSearch" placeholder="Search question bank..." oninput="renderBank()"></div>
+    <div class="table-wrap"><table><thead><tr><th>QUESTION</th><th>TYPE</th><th>MARKS</th><th>ACTION</th></tr></thead><tbody id="bankRows"></tbody></table></div>
+  </div>
+</section>
+
+<section class="page" id="student">
+  <div class="section-head"><div><h2>Student Examination Portal</h2><p>Enter your details to access available examinations</p></div><span class="tag green">STUDENT AREA</span></div>
+  <div class="grid content-grid">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:18px">Student Information</h2>
+      <div class="field"><label>Full Name</label><input id="studentName" placeholder="Enter your full name"></div>
+      <div class="field"><label>Roll Number</label><input id="studentRoll" placeholder="e.g. BSM-23-20"></div>
+      <div class="field"><label>Department</label><input id="studentDepartment" value="CASPAM"></div>
+      <div class="notice">Please enter your correct details. Your roll number will be included in your examination result.</div>
+      <button class="btn primary" onclick="saveStudent()">Save Student Details</button>
+      <p class="muted" id="studentSaved" style="margin-top:12px"></p>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:10px">Examination Guidelines</h2>
+      <div class="activity"><div class="activity-icon">01</div><div><strong>Read instructions</strong><p>Check the exam duration and marks before starting.</p></div></div>
+      <div class="activity"><div class="activity-icon">02</div><div><strong>Manage your time</strong><p>Use the timer to keep track of your remaining time.</p></div></div>
+      <div class="activity"><div class="activity-icon">03</div><div><strong>Review your answers</strong><p>Use the question navigator to review unanswered questions.</p></div></div>
+      <div class="activity"><div class="activity-icon">04</div><div><strong>Submit your exam</strong><p>Submit before the timer reaches zero.</p></div></div>
+    </div>
+  </div>
+  <div style="margin-top:20px"><div class="section-head"><div><h2>Available Examinations</h2><p>Select an examination to begin</p></div></div><div class="exam-list" id="studentExams"></div></div>
+</section>
+
+<section class="page" id="results">
+  <div class="section-head"><div><h2>Results & Analytics</h2><p>Review submitted examination attempts</p></div><button class="btn primary" onclick="exportCSV()">↓ Export CSV</button></div>
+  <div class="grid stats">
+    <div class="card"><div class="muted">Total Attempts</div><div class="stat-value" id="resultAttempts">0</div></div>
+    <div class="card"><div class="muted">Average Score</div><div class="stat-value" id="resultAverage">0%</div></div>
+    <div class="card"><div class="muted">Highest Score</div><div class="stat-value" id="resultHighest">0%</div></div>
+    <div class="card"><div class="muted">Pending Written Answers</div><div class="stat-value" id="resultPending">0</div></div>
+  </div>
+  <div class="card">
+    <div class="section-head"><div><h2>Student Results</h2><p>Detailed examination records</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLL NO.</th><th>EXAMINATION</th><th>SCORE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="resultRows"></tbody></table></div>
+  </div>
+</section>
+
+<section class="page" id="settings">
+  <div class="grid content-grid">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:10px">Data Backup & Restore</h2>
+      <p class="muted">Download your examinations, question bank and results as a JSON backup. Restore them later on this browser.</p>
+      <div class="inline" style="margin-top:20px">
+        <button class="btn primary" onclick="backupData()">↓ Download Backup</button>
+        <button class="btn" onclick="document.getElementById('restoreFile').click()">↑ Restore Backup</button>
+        <input type="file" id="restoreFile" accept=".json" hidden onchange="restoreData(event)">
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:10px">System Information</h2>
+      <div class="result-row"><span>Platform</span><strong>CASPAM ExamHub Pro</strong></div>
+      <div class="result-row"><span>Storage</span><strong>Browser Local Storage</strong></div>
+      <div class="result-row"><span>Version</span><strong>2.0</strong></div>
+      <div class="result-row"><span>Department</span><strong>CASPAM</strong></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2 style="font-size:16px;margin-bottom:10px">Important System Notice</h2>
+    <div class="notice">This is a frontend demonstration. Data is stored in the current browser only. It does not provide secure accounts, shared student access, server-side answer protection or reliable anti-cheating. Do not use it for confidential or high-stakes university examinations without a secure backend.</div>
+    <button class="btn danger" onclick="clearAllData()">Clear All Local Data</button>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+ <div class="modal-box" id="modalContent"></div>
+</div>
+
+<div class="exam-screen" id="examScreen">
+ <div class="exam-layout">
+  <div class="exam-top">
+   <div><div class="eyebrow">CASPAM EXAMINATION</div><h2 id="attemptTitle" style="font-size:19px;margin-top:6px">Examination</h2><p class="muted" id="attemptStudent"></p></div>
+   <div class="timer" id="timer">30:00</div>
+  </div>
+  <div class="exam-body">
+   <div class="question-box">
+    <div class="inline" style="justify-content:space-between"><span class="tag" id="questionSection">SECTION A</span><span class="muted" id="questionMarks">1 Mark</span></div>
+    <div class="muted" id="questionPosition" style="margin-top:20px"></div>
+    <h3 id="questionText"></h3>
+    <div id="answerArea"></div>
+    <div class="exam-controls">
+     <button class="btn" onclick="previousQuestion()">← Previous</button>
+     <button class="btn" id="reviewBtn" onclick="toggleReview()">☆ Mark for Review</button>
+     <button class="btn primary" onclick="nextQuestion()">Next →</button>
+    </div>
+   </div>
+   <div class="question-nav">
+    <h3 style="font-size:13px">Question Navigator</h3>
+    <p class="muted" style="margin-top:5px">Select any question</p>
+    <div class="number-grid" id="numberGrid"></div>
+    <div class="muted">🟢 Answered<br>🔵 Current question<br>🟡 Marked for review</div>
+    <button class="btn primary" style="width:100%;margin-top:20px" onclick="submitExam(false)">Submit Examination</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const read = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
+};
+let exams = read("caspam_exams", []);
+let bank = read("caspam_bank", []);
+let results = read("caspam_results", []);
+let activities = read("caspam_activity", []);
+let questionsDraft = [];
+let attempt = null;
+let timerInterval = null;
+
+function persist(){
+ localStorage.setItem("caspam_exams",JSON.stringify(exams));
+ localStorage.setItem("caspam_bank",JSON.stringify(bank));
+ localStorage.setItem("caspam_results",JSON.stringify(results));
+ localStorage.setItem("caspam_activity",JSON.stringify(activities));
+}
+function logActivity(title,detail){
+ activities.unshift({title,detail,date:new Date().toLocaleString()});
+ activities=activities.slice(0,8);
+ persist();
+}
+const pageInfo={
+ dashboard:["Dashboard Overview","Your examination control centre."],
+ exams:["All Examinations","Manage and organize department examinations."],
+ create:["Create Examination","Build a new examination with your own questions."],
+ questionbank:["Question Bank","Your reusable collection of questions."],
+ student:["Student Portal","Student examination access and instructions."],
+ results:["Results & Analytics","Examination performance and student results."],
+ settings:["System Settings","Backup and manage your local data."]
+};
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $(id).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ $("pageTitle").textContent=pageInfo[id][0];
+ $("pageSubtitle").textContent=pageInfo[id][1];
+ $("sidebar").classList.remove("open");
+ renderAll();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function toggleMenu(){$("sidebar").classList.toggle("open")}
+
+function renderAll(){
+ $("statExams").textContent=exams.length;
+ $("statQuestions").textContent=bank.length;
+ $("statAttempts").textContent=results.length;
+ let avg=results.length?results.reduce((s,r)=>s+r.percentage,0)/results.length:0;
+ $("statAverage").textContent=Math.round(avg)+"%";
+ renderRecent();renderExams();renderBank();renderStudentExams();renderResults();renderActivities();renderChart();
+}
+function renderRecent(){
+ let rows=exams.slice(-5).reverse();
+ $("recentExams").innerHTML=rows.length?rows.map(e=>`<tr><td><strong>${escapeHTML(e.title)}</strong><br><span class="muted">${escapeHTML(e.subject)}</span></td><td>${e.questions.length}</td><td>${e.duration} min</td><td><span class="tag ${e.status==="active"?"green":"yellow"}">${e.status}</span></td></tr>`).join(""):`<tr><td colspan="4" class="empty">No examinations created yet.</td></tr>`;
+}
+function renderActivities(){
+ $("activityList").innerHTML=activities.length?activities.slice(0,5).map(a=>`<div class="activity"><div class="activity-icon">✦</div><div><strong>${escapeHTML(a.title)}</strong><p>${escapeHTML(a.detail)}</p></div></div>`).join(""):`<div class="empty">No activity yet. Create your first examination!</div>`;
+}
+function renderExams(){
+ let search=($("examSearch")?.value||"").toLowerCase();
+ let filter=$("examFilter")?.value||"all";
+ let list=exams.filter(e=>(e.title+" "+e.subject).toLowerCase().includes(search)&&(filter==="all"||e.status===filter));
+ $("examList").innerHTML=list.length?list.map(e=>`
+ <div class="exam-card">
+  <span class="tag ${e.status==="active"?"green":"yellow"}">${e.status.toUpperCase()}</span>
+  <h3>${escapeHTML(e.title)}</h3><p>${escapeHTML(e.subject)}</p>
+  <div class="exam-meta"><span>▤ ${e.questions.length} Questions</span><span>◷ ${e.duration} Minutes</span><span>★ ${e.total} Marks</span></div>
+  <div class="inline"><button class="btn small" onclick="viewExam('${e.id}')">View Details</button><button class="btn small" onclick="duplicateExam('${e.id}')">Duplicate</button><button class="btn small danger" onclick="deleteExam('${e.id}')">Delete</button></div>
+ </div>`).join(""):`<div class="card empty">No examinations found. Create your first exam.</div>`;
+}
+function renderBank(){
+ let q=($("bankSearch")?.value||"").toLowerCase();
+ let items=bank.filter(x=>x.text.toLowerCase().includes(q));
+ $("bankRows").innerHTML=items.length?items.map(x=>`<tr><td>${escapeHTML(x.text)}</td><td><span class="tag">${x.type}</span></td><td>${x.marks}</td><td><button class="btn small danger" onclick="deleteBank('${x.id}')">Remove</button></td></tr>`).join(""):`<tr><td colspan="4" class="empty">Your question bank is empty.</td></tr>`;
+}
+function renderStudentExams(){
+ let list=exams.filter(e=>e.status==="active");
+ $("studentExams").innerHTML=list.length?list.map(e=>`<div class="exam-card"><span class="tag green">AVAILABLE</span><h3>${escapeHTML(e.title)}</h3><p>${escapeHTML(e.subject)}</p><div class="exam-meta"><span>◷ ${e.duration} min</span><span>▤ ${e.questions.length} questions</span><span>★ ${e.total} marks</span></div><button class="btn primary" onclick="startExam('${e.id}')">Start Examination →</button></div>`).join(""):`<div class="card empty">There are currently no active examinations.</div>`;
+}
+function renderResults(){
+ let avg=results.length?results.reduce((s,r)=>s+r.percentage,0)/results.length:0;
+ $("resultAttempts").textContent=results.length;
+ $("resultAverage").textContent=Math.round(avg)+"%";
+ $("resultHighest").textContent=Math.round(results.length?Math.max(...results.map(r=>r.percentage)):0)+"%";
+ $("resultPending").textContent=results.filter(r=>r.pending).length;
+ $("resultRows").innerHTML=results.length?results.slice().reverse().map(r=>`<tr><td>${escapeHTML(r.name)}</td><td>${escapeHTML(r.roll)}</td><td>${escapeHTML(r.examTitle)}</td><td>${r.score}/${r.total} (${Math.round(r.percentage)}%)</td><td><span class="tag ${r.pending?"yellow":"green"}">${r.pending?"Pending marking":"Submitted"}</span></td><td><button class="btn small" onclick="viewResult('${r.id}')">Details</button>${r.pending?` <button class="btn small" onclick="markResult('${r.id}')">Mark</button>`:""}</td></tr>`).join(""):`<tr><td colspan="6" class="empty">No results available yet.</td></tr>`;
+}
+function renderChart(){
+ let groups=[0,0,0,0,0];
+ results.forEach(r=>{let i=Math.min(4,Math.floor(r.percentage/20));groups[i]++});
+ let max=Math.max(1,...groups);
+ $("performanceChart").innerHTML=groups.map((v,i)=>`<div class="bar-item"><strong style="font-size:10px">${v}</strong><div class="bar" style="height:${Math.max(3,v/max*110)}px"></div><small>${i*20}-${i*20+19}%</small></div>`).join("");
+}
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function addQuestion(data=null){
+ let q=data||{type:"mcq",text:"",options:["","","",""],correct:0,marks:1,section:"Part A"};
+ questionsDraft.push(q);
+ renderQuestionEditors();
+}
+function renderQuestionEditors(){
+ $("questionCount").textContent=questionsDraft.length+" questions added";
+ $("questionEditors").innerHTML=questionsDraft.map((q,i)=>`
+ <div class="question-editor">
+  <div class="section-head"><h3>QUESTION ${i+1}</h3><button class="btn small danger" onclick="removeQuestion(${i})">Remove</button></div>
+  <div class="form-grid">
+   <div class="field"><label>Question Type</label><select onchange="updateQ(${i},'type',this.value)"><option value="mcq" ${q.type==="mcq"?"selected":""}>Multiple Choice</option><option value="truefalse" ${q.type==="truefalse"?"selected":""}>True / False</option><option value="short" ${q.type==="short"?"selected":""}>Short Answer</option><option value="long" ${q.type==="long"?"selected":""}>Long Answer</option></select></div>
+   <div class="field"><label>Section</label><input value="${escapeHTML(q.section)}" onchange="updateQ(${i},'section',this.value)"></div>
+  </div>
+  <div class="field"><label>Question Text</label><textarea onchange="updateQ(${i},'text',this.value)" placeholder="Write your question...">${escapeHTML(q.text)}</textarea></div>
+  ${q.type==="mcq"?`<div class="field"><label>Options (select the correct answer)</label><div class="option-grid">${q.options.map((o,j)=>`<label class="inline"><input type="radio" name="correct${i}" ${Number(q.correct)===j?"checked":""} onchange="updateQ(${i},'correct',${j})"><input placeholder="Option ${j+1}" value="${escapeHTML(o)}" onchange="updateOption(${i},${j},this.value)"></label>`).join("")}</div></div>`:""}
+  ${q.type==="truefalse"?`<div class="field"><label>Correct Answer</label><select onchange="updateQ(${i},'correct',this.value)"><option value="true" ${q.correct===true||q.correct==="true"?"selected":""}>True</option><option value="false" ${q.correct===false||q.correct==="false"?"selected":""}>False</option></select></div>`:""}
+  <div class="field"><label>Marks</label><input type="number" min="1" value="${q.marks}" onchange="updateQ(${i},'marks',Number(this.value))"></div>
+ </div>`).join("");
+}
+function updateQ(i,k,v){questionsDraft[i][k]=v}
+function updateOption(i,j,v){questionsDraft[i].options[j]=v}
+function removeQuestion(i){questionsDraft.splice(i,1);renderQuestionEditors()}
+function resetBuilder(){
+ if(!confirm("Clear the examination form?"))return;
+ questionsDraft=[];["examTitle","examSubject","examInstructions"].forEach(id=>$(id).value="");
+ $("examDuration").value=30;$("examTotal").value=20;
+ renderQuestionEditors();
+}
+function saveExam(){
+ let title=$("examTitle").value.trim(),subject=$("examSubject").value.trim();
+ if(!title||!subject||!questionsDraft.length){alert("Please enter an examination title, subject and at least one question.");return}
+ for(let i=0;i<questionsDraft.length;i++){
+  let q=questionsDraft[i];
+  if(!q.text.trim()){alert("Please write the text for Question "+(i+1));return}
+  if(q.type==="mcq"&&q.options.some(x=>!x.trim())){alert("Please complete all four options for Question "+(i+1));return}
+ }
+ let total=questionsDraft.reduce((s,q)=>s+Number(q.marks||1),0);
+ let exam={
+  id:crypto.randomUUID(),title,subject,
+  duration:Math.max(1,Number($("examDuration").value)||30),
+  total:total,status:$("examStatus").value,
+  random:$("examRandom").value==="yes",
+  negative:Number($("negativeMarking").value),
+  instructions:$("examInstructions").value,
+  questions:JSON.parse(JSON.stringify(questionsDraft)),
+  created:new Date().toISOString()
+ };
+ exams.push(exam);
+ exam.questions.forEach(q=>bank.push({...q,id:crypto.randomUUID()}));
+ persist();logActivity("Examination created",title);
+ alert("Examination saved successfully!");
+ resetBuilder();showPage("exams");
+}
+function deleteExam(id){
+ if(!confirm("Delete this examination?"))return;
+ exams=exams.filter(e=>e.id!==id);persist();logActivity("Examination deleted","An examination was removed.");renderAll();
+}
+function duplicateExam(id){
+ let e=exams.find(x=>x.id===id);if(!e)return;
+ let copy=JSON.parse(JSON.stringify(e));copy.id=crypto.randomUUID();copy.title+=" (Copy)";
+ exams.push(copy);persist();logActivity("Examination duplicated",copy.title);renderAll();
+}
+function deleteBank(id){bank=bank.filter(q=>q.id!==id);persist();renderAll()}
+function viewExam(id){
+ let e=exams.find(x=>x.id===id);if(!e)return;
+ openModal(`<div class="modal-head"><h2>${escapeHTML(e.title)}</h2><button class="close" onclick="closeModal()">×</button></div><p class="muted">${escapeHTML(e.subject)}</p><div class="result-row"><span>Duration</span><strong>${e.duration} minutes</strong></div><div class="result-row"><span>Questions</span><strong>${e.questions.length}</strong></div><div class="result-row"><span>Total Marks</span><strong>${e.total}</strong></div><div class="result-row"><span>Negative Marking</span><strong>${e.negative}</strong></div><h3 style="margin-top:20px;font-size:13px">Instructions</h3><p class="muted">${escapeHTML(e.instructions||"No additional instructions.")}</p>`);
+}
+function openModal(html){$("modalContent").innerHTML=html;$("modal").classList.add("show")}
+function closeModal(){$("modal").classList.remove("show")}
+
+function saveStudent(){
+ let name=$("studentName").value.trim(),roll=$("studentRoll").value.trim();
+ if(!name||!roll){alert("Please enter your name and roll number.");return}
+ localStorage.setItem("caspam_student",JSON.stringify({name,roll,department:$("studentDepartment").value}));
+ $("studentSaved").textContent="Details saved for "+name+" ("+roll+").";
+}
+function getStudent(){return read("caspam_student",null)}
+function startExam(id){
+ let student=getStudent();
+ if(!student){alert("Please save your student details first.");showPage("student");return}
+ let exam=exams.find(e=>e.id===id);if(!exam)return;
+ if(!confirm(`${exam.title}\nDuration: ${exam.duration} minutes\nQuestions: ${exam.questions.length}\n\n${exam.instructions||"Read every question carefully."}\n\nStart examination?`))return;
+ let qs=JSON.parse(JSON.stringify(exam.questions));
+ if(exam.random)qs.sort(()=>Math.random()-.5);
+ attempt={exam,student,questions:qs,index:0,answers:{},review:[],seconds:exam.duration*60,started:Date.now()};
+ $("attemptTitle").textContent=exam.title;
+ $("attemptStudent").textContent=student.name+" · "+student.roll;
+ $("examScreen").classList.add("show");
+ renderAttempt();
+ clearInterval(timerInterval);
+ timerInterval=setInterval(()=>{
+  attempt.seconds--;
+  let m=Math.floor(attempt.seconds/60),s=attempt.seconds%60;
+  $("timer").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  if(attempt.seconds<=0){clearInterval(timerInterval);alert("Time is up. Your examination will be submitted.");submitExam(true)}
+ },1000);
+}
+function renderAttempt(){
+ let q=attempt.questions[attempt.index];
+ $("questionSection").textContent=q.section||"GENERAL";
+ $("questionMarks").textContent=q.marks+" Marks";
+ $("questionPosition").textContent=`QUESTION ${attempt.index+1} OF ${attempt.questions.length}`;
+ $("questionText").textContent=q.text;
+ let val=attempt.answers[attempt.index];
+ if(q.type==="mcq"||q.type==="truefalse"){
+  let opts=q.type==="mcq"?q.options:["True","False"];
+  $("answerArea").innerHTML=opts.map((o,j)=>`<label class="answer-option"><input type="radio" name="studentAnswer" value="${j}" ${String(val)===String(j)?"checked":""} onchange="setAnswer(${j})"> ${escapeHTML(o)}</label>`).join("");
+ }else{
+  $("answerArea").innerHTML=`<div class="field"><label>Your Answer</label><textarea rows="7" placeholder="Write your answer here..." oninput="setAnswer(this.value)">${escapeHTML(val||"")}</textarea></div>`;
+ }
+ $("reviewBtn").textContent=attempt.review.includes(attempt.index)?"★ Remove Review Flag":"☆ Mark for Review";
+ renderNavigator();
+}
+function setAnswer(value){attempt.answers[attempt.index]=value;renderNavigator()}
+function renderNavigator(){
+ $("numberGrid").innerHTML=attempt.questions.map((q,i)=>`<button class="${i===attempt.index?"current":""} ${attempt.answers[i]!==undefined&&attempt.answers[i]!==""?"answered":""} ${attempt.review.includes(i)?"review":""}" onclick="goQuestion(${i})">${i+1}</button>`).join("");
+}
+function goQuestion(i){attempt.index=i;renderAttempt()}
+function previousQuestion(){if(attempt.index>0){attempt.index--;renderAttempt()}}
+function nextQuestion(){if(attempt.index<attempt.questions.length-1){attempt.index++;renderAttempt()}}
+function toggleReview(){
+ let i=attempt.index;
+ attempt.review.includes(i)?attempt.review=attempt.review.filter(x=>x!==i):attempt.review.push(i);
+ renderAttempt();
+}
+function submitExam(auto){
+ if(!attempt)return;
+ let unanswered=attempt.questions.filter((q,i)=>attempt.answers[i]===undefined||attempt.answers[i]==="").length;
+ if(!auto&&!confirm(`You have ${unanswered} unanswered question(s). Submit your examination?`))return;
+ clearInterval(timerInterval);
+ let score=0,possible=0,pending=false,details=[];
+ attempt.questions.forEach((q,i)=>{
+  let answer=attempt.answers[i],correct=null,awarded=0;
+  possible+=Number(q.marks);
+  if(q.type==="mcq"){
+   correct=Number(answer)===Number(q.correct);
+   awarded=correct?Number(q.marks):(answer!==undefined?-attempt.exam.negative:0);
+  }else if(q.type==="truefalse"){
+   correct=String(answer)==String(q.correct);
+   awarded=correct?Number(q.marks):(answer!==undefined?-attempt.exam.negative:0);
+  }else if(answer!==undefined&&String(answer).trim()){
+   pending=true;
+  }
+  score+=awarded;
+  details.push({question:q.text,type:q.type,answer:answer??"",correct,marks:q.marks,awarded,section:q.section});
+ });
+ score=Math.max(0,score);
+ let record={
+  id:crypto.randomUUID(),name:attempt.student.name,roll:attempt.student.roll,
+  examTitle:attempt.exam.title,examId:attempt.exam.id,score,total:possible,
+  percentage:possible?score/possible*100:0,pending,details,
+  date:new Date().toLocaleString(),duration:Math.round((Date.now()-attempt.started)/1000)
+ };
+ results.push(record);persist();logActivity("Examination submitted",record.name+" submitted "+record.examTitle);
+ attempt=null;$("examScreen").classList.remove("show");renderAll();
+ showResultSummary(record);
+}
+function showResultSummary(r){
+ openModal(`<div class="modal-head"><h2>Examination Submitted</h2><button class="close" onclick="closeModal()">×</button></div><div class="muted">Your examination has been recorded.</div><div class="result-score">${Math.round(r.percentage)}%</div><div class="result-row"><span>Student</span><strong>${escapeHTML(r.name)}</strong></div><div class="result-row"><span>Roll Number</span><strong>${escapeHTML(r.roll)}</strong></div><div class="result-row"><span>Score</span><strong>${r.score} / ${r.total}</strong></div><div class="result-row"><span>Written answers</span><strong>${r.pending?"Awaiting manual marking":"No pending answers"}</strong></div><button class="btn primary" style="margin-top:20px" onclick="closeModal();showPage('results')">View Results</button>`);
+}
+function viewResult(id){
+ let r=results.find(x=>x.id===id);if(!r)return;
+ openModal(`<div class="modal-head"><h2>Student Result</h2><button class="close" onclick="closeModal()">×</button></div><div class="result-score">${Math.round(r.percentage)}%</div><div class="result-row"><span>Name</span><strong>${escapeHTML(r.name)}</strong></div><div class="result-row"><span>Roll Number</span><strong>${escapeHTML(r.roll)}</strong></div><div class="result-row"><span>Exam</span><strong>${escapeHTML(r.examTitle)}</strong></div><div class="result-row"><span>Score</span><strong>${r.score}/${r.total}</strong></div><h3 style="font-size:13px;margin:20px 0 10px">Answer Review</h3>${r.details.map((d,i)=>`<div class="question-editor"><strong>Q${i+1}. ${escapeHTML(d.question)}</strong><p class="muted">Answer: ${escapeHTML(d.answer||"Not answered")}</p><p class="muted">Marks awarded: ${d.awarded} / ${d.marks}${d.correct===null?" · Manual marking required":d.correct?" · Correct":" · Incorrect"}</p></div>`).join("")}`);
+}
+function markResult(id){
+ let r=results.find(x=>x.id===id);if(!r)return;
+ let written=r.details.map((d,i)=>({...d,index:i})).filter(d=>d.type==="short"||d.type==="long");
+ if(!written.length){r.pending=false;persist();renderResults();return}
+ openModal(`<div class="modal-head"><h2>Manual Marking</h2><button class="close" onclick="closeModal()">×</button></div><p class="muted">${escapeHTML(r.name)} · ${escapeHTML(r.examTitle)}</p><div id="markFields">${written.map(d=>`<div class="question-editor"><strong>${escapeHTML(d.question)}</strong><p class="muted">Student answer: ${escapeHTML(d.answer||"Not answered")}</p><div class="field"><label>Marks awarded (maximum ${d.marks})</label><input type="number" min="0" max="${d.marks}" step="0.5" id="mark${d.index}" value="${d.awarded||0}"></div></div>`).join("")}</div><button class="btn primary" onclick="saveMarks('${r.id}')">Save Marks</button>`);
+}
+function saveMarks(id){
+ let r=results.find(x=>x.id===id);if(!r)return;
+ let extra=0;
+ r.details.forEach((d,i)=>{
+  if(d.type==="short"||d.type==="long"){
+   let el=$("mark"+i);
+   if(el){let n=Math.max(0,Math.min(Number(d.marks),Number(el.value)||0));d.awarded=n;extra+=n}
+  }
+ });
+ let objective=r.details.filter(d=>d.type==="mcq"||d.type==="truefalse").reduce((s,d)=>s+d.awarded,0);
+ r.score=Math.max(0,objective+extra);
+ r.percentage=r.total?r.score/r.total*100:0;r.pending=false;
+ persist();closeModal();renderAll();alert("Marks saved successfully.");
+}
+function exportCSV(){
+ if(!results.length){alert("No results to export.");return}
+ let rows=[["Name","Roll Number","Examination","Score","Total","Percentage","Date"]];
+ results.forEach(r=>rows.push([r.name,r.roll,r.examTitle,r.score,r.total,r.percentage.toFixed(2),r.date]));
+ let csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
+ downloadFile("CASPAM_Exam_Results.csv",csv,"text/csv");
+}
+function backupData(){
+ let data={exams,bank,results,activities,student:getStudent()};
+ downloadFile("CASPAM_ExamHub_Backup.json",JSON.stringify(data,null,2),"application/json");
+}
+function restoreData(event){
+ let file=event.target.files[0];if(!file)return;
+ let reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   let d=JSON.parse(reader.result);
+   if(!Array.isArray(d.exams)||!Array.isArray(d.results)||!Array.isArray(d.bank))throw Error();
+   exams=d.exams;bank=d.bank;results=d.results;activities=d.activities||[];
+   persist();renderAll();alert("Backup restored successfully.");
+  }catch{alert("Invalid backup file.");}
+ };
+ reader.readAsText(file);event.target.value="";
+}
+function downloadFile(name,content,type){
+ let blob=new Blob([content],{type}),url=URL.createObjectURL(blob);
+ let a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);
+}
+function clearAllData(){
+ if(!confirm("This will permanently clear all local examinations, questions and results. Continue?"))return;
+ exams=[];bank=[];results=[];activities=[];persist();renderAll();alert("Local data cleared.");
+}
+
+// Sample examination for first-time demonstration
+if(!exams.length){
+ let sample=[
+  {type:"mcq",text:"What is the derivative of x²?",options:["x","2x","2","x³"],correct:1,marks:2,section:"Part A"},
+  {type:"mcq",text:"What is the identity element of addition in real numbers?",options:["1","-1","0","2"],correct:2,marks:2,section:"Part A"},
+  {type:"truefalse",text:"Every finite set is countable.",correct:true,marks:2,section:"Part A"},
+  {type:"short",text:"Define a metric space.",options:[],correct:"",marks:4,section:"Part B"},
+  {type:"long",text:"Explain the concept of a linear transformation with an example.",options:[],correct:"",marks:10,section:"Part C"}
+ ];
+ let sampleExam={id:crypto.randomUUID(),title:"Mathematics Practice Examination",subject:"General Mathematics",duration:30,total:20,status:"active",random:false,negative:0,instructions:"Attempt all questions. Check your answers before submitting.",questions:sample,created:new Date().toISOString()};
+ exams.push(sampleExam);
+ sample.forEach(q=>bank.push({...q,id:crypto.randomUUID()}));
+ persist();
+}
+function loadStudent(){
+ let s=getStudent();
+ if(s){$("studentName").value=s.name;$("studentRoll").value=s.roll;$("studentDepartment").value=s.department||"CASPAM";$("studentSaved").textContent="Saved student details loaded."}
+}
+renderQuestionEditors();loadStudent();renderAll();
+</script>
+</body>
+</html>
